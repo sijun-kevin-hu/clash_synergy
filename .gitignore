@@ -1,0 +1,9 @@
+.env
+.env.local
+.venv/
+__pycache__/
+*.pyc
+data/raw/
+data/processed/*
+!data/processed/card_list.json
+!data/processed/support_list.json

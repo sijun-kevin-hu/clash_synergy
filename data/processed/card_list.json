@@ -1,0 +1,411 @@
+{
+    "Archer Queen": [
+        "support"
+    ],
+    "Archers": [
+        "support"
+    ],
+    "Arrows": [
+        "spell"
+    ],
+    "Baby Dragon": [
+        "air",
+        "support"
+    ],
+    "Balloon": [
+        "win condition",
+        "air"
+    ],
+    "Bandit": [
+        "mini-tank"
+    ],
+    "Barbarian Barrel": [
+        "spell",
+        "cycle"
+    ],
+    "Barbarian Hut": [
+        "building"
+    ],
+    "Barbarians": [
+        "swarm"
+    ],
+    "Bats": [
+        "swarm",
+        "cycle"
+    ],
+    "Battle Healer": [
+        "support",
+        "mini-tank"
+    ],
+    "Battle Ram": [
+        "win condition",
+        "mini-tank"
+    ],
+    "Berserker": [
+        "mini-tank"
+    ],
+    "Bomb Tower": [
+        "building"
+    ],
+    "Bomber": [
+        "support"
+    ],
+    "Boss Bandit": [
+        "mini-tank"
+    ],
+    "Bowler": [
+        "support"
+    ],
+    "Cannon": [
+        "building"
+    ],
+    "Cannon Cart": [
+        "mini-tank"
+    ],
+    "Clone": [
+        "spell"
+    ],
+    "Dark Prince": [
+        "mini-tank",
+        "support"
+    ],
+    "Dart Goblin": [
+        "support",
+        "cycle"
+    ],
+    "Earthquake": [
+        "spell"
+    ],
+    "Electro Dragon": [
+        "air",
+        "support"
+    ],
+    "Electro Giant": [
+        "win condition",
+        "mini-tank"
+    ],
+    "Electro Spirit": [
+        "support",
+        "cycle"
+    ],
+    "Electro Wizard": [
+        "support"
+    ],
+    "Elite Barbarians": [
+        "mini-tank"
+    ],
+    "Elixir Collector": [
+        "building"
+    ],
+    "Elixir Golem": [
+        "win condition",
+        "mini-tank"
+    ],
+    "Executioner": [
+        "support"
+    ],
+    "Fire Spirit": [
+        "support",
+        "cycle"
+    ],
+    "Fireball": [
+        "spell"
+    ],
+    "Firecracker": [
+        "support"
+    ],
+    "Fisherman": [
+        "support"
+    ],
+    "Flying Machine": [
+        "air",
+        "support"
+    ],
+    "Freeze": [
+        "spell"
+    ],
+    "Furnace": [
+        "building"
+    ],
+    "Giant": [
+        "win condition",
+        "mini-tank"
+    ],
+    "Giant Skeleton": [
+        "win condition",
+        "mini-tank"
+    ],
+    "Giant Snowball": [
+        "spell",
+        "cycle"
+    ],
+    "Goblin Barrel": [
+        "win condition",
+        "spell"
+    ],
+    "Goblin Cage": [
+        "building"
+    ],
+    "Goblin Curse": [
+        "spell"
+    ],
+    "Goblin Demolisher": [
+        "win condition"
+    ],
+    "Goblin Drill": [
+        "win condition",
+        "building"
+    ],
+    "Goblin Gang": [
+        "swarm"
+    ],
+    "Goblin Giant": [
+        "win condition",
+        "mini-tank"
+    ],
+    "Goblin Hut": [
+        "building"
+    ],
+    "Goblin Machine": [
+        "win condition"
+    ],
+    "Goblins": [
+        "swarm",
+        "cycle"
+    ],
+    "Goblinstein": [
+        "mini-tank"
+    ],
+    "Golden Knight": [
+        "mini-tank"
+    ],
+    "Golem": [
+        "win condition",
+        "mini-tank"
+    ],
+    "Graveyard": [
+        "win condition",
+        "spell"
+    ],
+    "Guards": [
+        "swarm"
+    ],
+    "Heal Spirit": [
+        "support",
+        "cycle"
+    ],
+    "Hog Rider": [
+        "win condition"
+    ],
+    "Hunter": [
+        "support"
+    ],
+    "Ice Golem": [
+        "mini-tank",
+        "cycle"
+    ],
+    "Ice Spirit": [
+        "support",
+        "cycle"
+    ],
+    "Ice Wizard": [
+        "support"
+    ],
+    "Inferno Dragon": [
+        "air"
+    ],
+    "Inferno Tower": [
+        "building"
+    ],
+    "Knight": [
+        "mini-tank"
+    ],
+    "Lava Hound": [
+        "win condition",
+        "air"
+    ],
+    "Lightning": [
+        "spell"
+    ],
+    "Little Prince": [
+        "support"
+    ],
+    "Lumberjack": [
+        "mini-tank"
+    ],
+    "Magic Archer": [
+        "support"
+    ],
+    "Mega Knight": [
+        "mini-tank"
+    ],
+    "Mega Minion": [
+        "air",
+        "support"
+    ],
+    "Mighty Miner": [
+        "mini-tank"
+    ],
+    "Miner": [
+        "win condition",
+        "mini-tank"
+    ],
+    "Mini P.E.K.K.A": [
+        "mini-tank"
+    ],
+    "Minion Horde": [
+        "swarm",
+        "air"
+    ],
+    "Minions": [
+        "air"
+    ],
+    "Mirror": [
+        "spell"
+    ],
+    "Monk": [
+        "mini-tank"
+    ],
+    "Mortar": [
+        "building",
+        "win condition"
+    ],
+    "Mother Witch": [
+        "support"
+    ],
+    "Musketeer": [
+        "support"
+    ],
+    "Night Witch": [
+        "support"
+    ],
+    "P.E.K.K.A": [
+        "win condition",
+        "mini-tank"
+    ],
+    "Phoenix": [
+        "air"
+    ],
+    "Poison": [
+        "spell"
+    ],
+    "Prince": [
+        "mini-tank",
+        "win condition"
+    ],
+    "Princess": [
+        "support"
+    ],
+    "Rage": [
+        "spell"
+    ],
+    "Ram Rider": [
+        "win condition"
+    ],
+    "Rascals": [
+        "swarm"
+    ],
+    "Rocket": [
+        "spell"
+    ],
+    "Royal Delivery": [
+        "spell"
+    ],
+    "Royal Ghost": [
+        "mini-tank"
+    ],
+    "Royal Giant": [
+        "win condition",
+        "mini-tank"
+    ],
+    "Royal Hogs": [
+        "win condition",
+        "swarm"
+    ],
+    "Royal Recruits": [
+        "swarm"
+    ],
+    "Rune Giant": [
+        "win condition",
+        "mini-tank"
+    ],
+    "Skeleton Army": [
+        "swarm"
+    ],
+    "Skeleton Barrel": [
+        "win condition",
+        "air"
+    ],
+    "Skeleton Dragons": [
+        "air"
+    ],
+    "Skeleton King": [
+        "support",
+        "mini-tank"
+    ],
+    "Skeletons": [
+        "swarm",
+        "cycle"
+    ],
+    "Sparky": [
+        "win condition"
+    ],
+    "Spear Goblins": [
+        "swarm",
+        "cycle"
+    ],
+    "Spirit Empress": [
+        "support"
+    ],
+    "Suspicious Bush": [
+        "support"
+    ],
+    "Tesla": [
+        "building"
+    ],
+    "The Log": [
+        "spell",
+        "cycle"
+    ],
+    "Three Musketeers": [
+        "win condition",
+        "support"
+    ],
+    "Tombstone": [
+        "building"
+    ],
+    "Tornado": [
+        "spell"
+    ],
+    "Valkyrie": [
+        "mini-tank",
+        "support"
+    ],
+    "Vines": [
+        "spell"
+    ],
+    "Void": [
+        "spell"
+    ],
+    "Wall Breakers": [
+        "win condition",
+        "cycle"
+    ],
+    "Witch": [
+        "support"
+    ],
+    "Wizard": [
+        "support"
+    ],
+    "X-Bow": [
+        "building",
+        "win condition"
+    ],
+    "Zap": [
+        "spell",
+        "cycle"
+    ],
+    "Zappies": [
+        "support"
+    ]
+}

@@ -1,0 +1,26 @@
+{
+  "counts": {
+    "raw_records": 50010,
+    "wrong_mode": 726,
+    "duplicate": 159,
+    "tie": 3
+  },
+  "usable_matches": 49122,
+  "splits": {
+    "train": 39297,
+    "validation": 4912,
+    "test": 4913
+  },
+  "labels": {
+    "1": 24515,
+    "0": 24607
+  },
+  "first_battle": "2026-01-01T03:51:08+00:00",
+  "last_battle": "2026-03-15T05:03:13+00:00",
+  "train_end_exclusive": "2026-03-14T20:30:58+00:00",
+  "validation_end_exclusive": "2026-03-15T01:46:12+00:00",
+  "unique_cards": 121,
+  "unique_players": 46850,
+  "seed": 42,
+  "history_policy": "Only strictly earlier observed matches; histories update during validation/test (rolling evaluation)."
+}
