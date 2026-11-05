@@ -33,7 +33,9 @@ filtered/duplicate counts, and recent activity. The display refreshes while API
 requests or backoff timers are running. Ctrl-C saves progress and restores your
 terminal. Restart the collector to enable the dashboard on an existing run.
 Use `--ui plain` for traditional logs; redirected output uses plain logs automatically.
-No additional UI dependencies are required.
+The dashboard uses Rich (installed with the requirements) for cyan/magenta panels,
+animated progress, API health counters, and recent activity. Narrow terminals stack
+the metric panels; short terminals hide activity to prioritize collection status.
 
 To refresh previously visited players for newer logs, use `--revisit`; supply extra seeds if needed. Use `--target-battles 1000` for a small trial. Do not run multiple collectors against the same raw directory simultaneously. Interrupt with Ctrl-C to save progress. State is written atomically; deduplication is rebuilt from raw records at startup. A truncated JSON line must be repaired before resuming.
 
