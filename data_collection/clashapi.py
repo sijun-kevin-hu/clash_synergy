@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(ROOT / '.env.local')
 
 from utils.battles import tag, battle_key, is_trophy_road
+from data_collection.dashboard import Dashboard
 
 def collect(args):
     token = os.environ.get('CLASH_ROYALE_API_TOKEN')
@@ -36,20 +37,29 @@ def collect(args):
                 if key: seen_battles.add(key)
     session = requests.Session()
     session.headers.update({'Authorization': f'Bearer {token}'})
+    dashboard = Dashboard(args.target_battles, getattr(args, 'ui', 'auto'))
+    dashboard.update(existing=len(seen_battles), queued=len(queue))
     def get(path):
         for attempt in range(6):
             time.sleep(args.delay)
             try:
+                dashboard.update(requests=dashboard.requests + 1, status='Polling the arena')
                 response = session.get(args.base_url.rstrip('/') + path, timeout=30)
                 if response.status_code in (401, 403):
                     raise SystemExit('API authorization failed: check token, endpoint and IP configuration.')
                 if response.status_code == 429 or response.status_code >= 500:
-                    time.sleep(min(60, 2 ** attempt)); continue
+                    wait = min(60, 2 ** attempt)
+                    dashboard.update(retries=dashboard.retries + 1, status=f'HTTP {response.status_code} · backing off {wait}s')
+                    dashboard.event(f'HTTP {response.status_code} · retry {attempt + 1}/6')
+                    time.sleep(wait); continue
                 response.raise_for_status()
                 return response.json()
             except (requests.Timeout, requests.ConnectionError):
                 if attempt == 5: raise
-                time.sleep(min(60, 2 ** attempt))
+                wait = min(60, 2 ** attempt)
+                dashboard.update(retries=dashboard.retries + 1, status=f'Connection interrupted · backing off {wait}s')
+                dashboard.event(f'Connection retry {attempt + 1}/6')
+                time.sleep(wait)
         raise requests.RequestException('Retry budget exhausted')
     def enqueue(t, force=False):
         t = tag(t)
@@ -61,6 +71,8 @@ def collect(args):
         tmp.replace(state_file)
     added = processed = 0
     try:
+        dashboard.start()
+        dashboard.event(f'Resumed archive · {len(seen_battles):,} unique battles')
         for clan in args.seed_clan:
             for member in get('/clans/' + quote(tag(clan), safe='') + '/members').get('items', []):
                 enqueue(member['tag'])
@@ -71,11 +83,14 @@ def collect(args):
             while queue and added < args.target_battles:
                 player = queue.popleft(); queued.discard(player)
                 if player in seen_players and not args.revisit: continue
+                dashboard.update(player=player, queued=len(queue))
+                before = added
                 # Preserve the current player in state until its complete log is handled.
                 try:
                     logs = get('/players/' + quote(player, safe='') + '/battlelog')
                 except requests.HTTPError as e:
                     if e.response.status_code == 404:
+                        dashboard.event(f'{player} · player not found')
                         seen_players.add(player); continue
                     queue.appendleft(player); raise
                 except BaseException:
@@ -86,11 +101,20 @@ def collect(args):
                         # Explore all 1v1 opponents, even when their battle isn't eligible.
                         if len(b.get('opponent', [])) == 1 and b['opponent'][0].get('tag'):
                             enqueue(b['opponent'][0]['tag'])
-                        if not is_trophy_road(b): continue
+                        if not is_trophy_road(b):
+                            dashboard.filtered += 1
+                            continue
                         trophies = [p.get('startingTrophies') for p in [b['team'][0], b['opponent'][0]]]
-                        if any(not isinstance(t, (int, float)) or t < args.min_trophies or t > args.max_trophies for t in trophies): continue
+                        if any(not isinstance(t, (int, float)) or t < args.min_trophies or t > args.max_trophies for t in trophies):
+                            dashboard.filtered += 1
+                            continue
                         key = battle_key(b)
-                        if not key or key in seen_battles: continue
+                        if not key:
+                            dashboard.filtered += 1
+                            continue
+                        if key in seen_battles:
+                            dashboard.duplicates += 1
+                            continue
                         out.write(json.dumps({'player_tag': player, 'battle': b}) + '\n')
                         seen_battles.add(key); added += 1
                         if added >= args.target_battles:
@@ -103,10 +127,19 @@ def collect(args):
                 else:
                     seen_players.add(player)
                 processed += 1
+                dashboard.update(added=added, processed=processed, queued=len(queue), status='Exploring opponent frontier')
+                dashboard.event(f'{player} · +{added - before} battles · {len(logs)} scanned')
                 if processed % 50 == 0:
-                    save(); print(f'players={processed} new_battles={added} queue={len(queue)}', flush=True)
+                    save()
+                    dashboard.event('Checkpoint saved')
+                    if not dashboard.enabled:
+                        print(f'players={processed} new_battles={added} queue={len(queue)}', flush=True)
     finally:
-        save(); session.close()
+        try:
+            save()
+        finally:
+            session.close()
+            dashboard.close()
         print(f'Added {added:,} new unique battles (requested {args.target_battles:,}).')
 
 def main():
@@ -120,6 +153,7 @@ def main():
     p.add_argument('--max-trophies', type=int, default=100_000)
     p.add_argument('--delay', type=float, default=0.15)
     p.add_argument('--revisit', action='store_true', help='Requeue previously visited players to fetch newer logs')
+    p.add_argument('--ui', choices=['auto', 'plain'], default='auto', help='Live terminal dashboard (auto) or plain log output')
     args = p.parse_args()
     if args.target_battles < 1 or args.delay < 0 or args.min_trophies > args.max_trophies: p.error('Invalid target, delay or trophy range')
     if args.revisit:
@@ -128,6 +162,9 @@ def main():
             args.seed_player.extend(json.loads(state_path.read_text()).get('seen_players', []))
             # Allow enqueueing old players during this invocation without losing the saved state.
             # collect uses seen_players to suppress duplicates; explicit refresh is handled below.
-    collect(args)
+    try:
+        collect(args)
+    except KeyboardInterrupt:
+        print('Stopped. Progress saved; run the same command to resume.')
 
 if __name__ == '__main__': main()

@@ -27,6 +27,14 @@ Each invocation targets **250,000 additional unique qualifying battles**, regard
 python -m data_collection.clashapi
 ```
 
+An interactive terminal automatically shows a live neon dashboard: session progress,
+battles/minute, estimated time remaining, player frontier, archive size, retries,
+filtered/duplicate counts, and recent activity. The display refreshes while API
+requests or backoff timers are running. Ctrl-C saves progress and restores your
+terminal. Restart the collector to enable the dashboard on an existing run.
+Use `--ui plain` for traditional logs; redirected output uses plain logs automatically.
+No additional UI dependencies are required.
+
 To refresh previously visited players for newer logs, use `--revisit`; supply extra seeds if needed. Use `--target-battles 1000` for a small trial. Do not run multiple collectors against the same raw directory simultaneously. Interrupt with Ctrl-C to save progress. State is written atomically; deduplication is rebuilt from raw records at startup. A truncated JSON line must be repaired before resuming.
 
 Only exact `PvP` / `Ladder` 1v1 records are accepted. The old 3,000–9,000 trophy restriction is removed because the proposal specifies Trophy Road generally; both players' starting trophies must fall within the configurable range (default 0–100,000). The upper bound is a configurable sanity limit, not an asserted current game maximum. Validate current API mode identifiers with an initial small collection before scaling.
