@@ -173,10 +173,13 @@ Use `--model-dir` for any saved experiment directory containing `model.json`
 and `features.json`. `--limit N` applies after `--split` filtering; without a
 split selection the input does not need a split column. `--threshold` defaults
 to 0.5. Output contains optional match_id, p1_win_probability and predicted_p1_win.
-Without `--output`, CSV is printed to stdout. Existing output files are rejected.
+Without `--output`, CSV is printed to stdout. Repeat runs automatically add increasing suffixes (`validation.csv`,
+`validation-1.csv`, `validation-2.csv`, …), continuing above the largest existing
+suffix and preserving previous files. The saved path is printed in the terminal.
 Required feature columns are validated and reordered; extra metadata is excluded,
-and NaN values are preserved. These commands do not train. Add `--evaluate` to print accuracy, ROC-AUC,
-log loss, Brier score and a confusion matrix to stderr using the selected rows
+and NaN values are preserved. These commands do not train. Add `--evaluate` to show a Rich evaluation panel with accuracy, macro F1, ROC-AUC,
+log loss (BCE), Brier score, per-class precision/recall/F1/support and a labeled
+confusion matrix on stderr using the selected rows
 and their labels. ROC-AUC is null when only one class is selected. For example:
 
 ```bash

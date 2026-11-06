@@ -126,10 +126,21 @@ necessary; do not claim these files are already active project instructions.
 `models/predict_xgboost.py` loads model.json and features.json without training.
 It accepts processed CSV input, optional split selection, row limit, classification
 threshold, and CSV output (stdout by default). It preserves saved feature order
-and missing values, rejects missing columns/infinities and existing output files,
+and missing values, rejects missing columns/infinities,
 and excludes metadata from model inputs. New raw decks still require preprocessing.
 
 Inference evaluation: `--evaluate` reports selected-batch accuracy, ROC-AUC,
 log loss, Brier score and confusion matrix using labels only as targets.
 Single-class ROC-AUC is null. All 11 unit tests passed, including metric values,
 row alignment after selection, CLI evaluation and single-class handling.
+
+Inference terminal report now uses the existing Rich dependency for styled
+metric tables, per-class precision/recall/F1/support, macro F1, and a labeled
+confusion matrix. R² is excluded because the task is binary classification.
+Undefined per-class precision/recall/F1 are reported as zero; single-class
+ROC-AUC is N/A. CSV output remains separate from the stderr report. All 11
+tests passed, including classification calculations and plain-text rendering.
+
+Inference CSV output now advances numeric suffixes automatically on repeated
+runs, above the largest existing suffix. Exclusive creation prevents overwriting
+existing results, including concurrent filename collisions.
