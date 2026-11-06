@@ -144,3 +144,8 @@ tests passed, including classification calculations and plain-text rendering.
 Inference CSV output now advances numeric suffixes automatically on repeated
 runs, above the largest existing suffix. Exclusive creation prevents overwriting
 existing results, including concurrent filename collisions.
+
+Inference defaults now run full validation evaluation with the saved deck-only
+model, display Rich metrics, and save numbered predictions/validation-report.csv
+outputs without requiring flags. Optional --split all and --no-evaluate support
+unlabeled custom inputs.

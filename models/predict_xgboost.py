@@ -116,16 +116,18 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--model-dir', type=Path, default=Path('artifacts/xgboost/deck-only'))
     parser.add_argument('--input', type=Path, default=Path('data/processed/combined/baseline.csv'))
-    parser.add_argument('--output', type=Path, help='Save CSV, adding increasing numeric suffixes on repeat runs; otherwise print CSV to stdout.')
-    parser.add_argument('--split', choices=['train', 'validation', 'test'], help='Select rows by their existing split.')
+    parser.add_argument('--output', type=Path, default=Path('predictions/validation-report.csv'), help='Save CSV, adding increasing numeric suffixes on repeat runs; otherwise print CSV to stdout.')
+    parser.add_argument('--split', choices=['train', 'validation', 'test', 'all'], default='validation', help='Select existing split (default: validation); all selects every row.')
     parser.add_argument('--limit', type=int, help='Predict only the first N rows after split selection.')
     parser.add_argument('--threshold', type=float, default=0.5)
-    parser.add_argument('--evaluate', action='store_true', help='Print labeled batch metrics to stderr; ROC-AUC is null for a single-class batch.')
+    parser.add_argument('--evaluate', action=argparse.BooleanOptionalAction, default=True, help='Show batch metrics (enabled by default); --no-evaluate skips metrics for unlabeled inputs.')
     args = parser.parse_args()
     if not 0 <= args.threshold <= 1:
         parser.error('--threshold must be between 0 and 1.')
     if args.limit is not None and args.limit < 1:
         parser.error('--limit must be positive.')
+    if args.split == 'all':
+        args.split = None
     console = Console(stderr=True, highlight=False)
     try:
         rows = pd.read_csv(args.input, nrows=args.limit if not args.split else None)

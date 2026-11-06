@@ -68,11 +68,13 @@ class InferenceTests(unittest.TestCase):
             rows.to_csv(root / 'input.csv', index=False)
             command = [sys.executable, str(Path(__file__).resolve().parents[1] / 'models/predict_xgboost.py'),
                        '--model-dir', str(root), '--input', str(root / 'input.csv'),
-                       '--split', 'validation', '--limit', '1', '--evaluate', '--output', str(root / 'out.csv')]
+                       '--limit', '1', '--output', str(root / 'out.csv')]
             run = subprocess.run(command, capture_output=True, text=True)
             self.assertEqual(run.returncode, 0, run.stderr)
             self.assertIn('N/A', run.stderr)
             self.assertIn('Matches: 1', run.stderr)
+            self.assertIn('Split: validation', run.stderr)
+            self.assertEqual(run.stdout, '')
             output = pd.read_csv(root / 'out.csv')
             self.assertEqual(output['match_id'].tolist(), ['b'])
             self.assertEqual(subprocess.run(command, capture_output=True).returncode, 0)
