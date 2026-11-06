@@ -104,6 +104,14 @@ are verified. Record settings, dataset hash, output paths, metrics and remaining
 limitations. Keep AGENT.md for durable working conventions.
 
 ## Delivery verification
+2026-11-05 output fix: XGBoost's default `missing=NaN` parameter is recorded as
+JSON `null` with an explicit encoding note, allowing strict metrics serialization
+without changing training's missing-value behavior. Two regression checks passed
+using local XGBoost 3.4.1, including a two-round synthetic CLI training run,
+strict JSON artifact parsing, and model reload/prediction. Existing experiment
+artifacts were not overwritten and full-dataset training was not rerun.
+
+Historical preparation notes (superseded for local installation/smoke testing):
 Prepared source passes Python compilation and synthetic loader/metric checks:
 feature allowlist and leakage exclusions, deck-only versus player-statistics
 inputs, training-only vocabulary, side symmetry, missing-value preservation,
