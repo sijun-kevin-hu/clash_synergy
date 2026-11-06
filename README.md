@@ -249,6 +249,42 @@ cannot learn effects for those cards. Optional evolution/tower inputs must match
 the trained variant. Raw decks or card names alone cannot be passed directly to
 `predict_proba`; they first need the matching feature transformation.
 
+## Independent-deck neural network
+
+Shared card embedding, a shared per-card encoder, mean pooling within each deck, then an MLP. No attention and no positional encoding, so card order does not change the prediction. Player 1 and Player 2 are the sides already assigned in `matches.jsonl`. This script only reads that file. It does not change preprocessing.
+
+Run from the repository root with your virtual environment active:
+
+```bash
+python models/train_independent_deck.py --features deck-only
+python models/train_independent_deck.py --features with-player-stats
+```
+
+The default input is `data/processed/combined/matches.jsonl`. Training uses binary cross-entropy with logits and stops early on validation loss. Deck-only uses the card embedding and `level / maxLevel`. With-player-stats also uses starting trophies, trophy difference, prior observed games, and prior observed win rate. A null win rate is mean-imputed from the training split and marked with a missingness flag. Card IDs that never appear in training use a learned unknown token. Means, standard deviations, and that vocabulary are fit on training rows only.
+
+The test split is not read unless you pass `--evaluate-test`, and only after the settings are frozen:
+
+```bash
+python models/train_independent_deck.py \
+  --features deck-only \
+  --evaluate-test \
+  --output-dir artifacts/independent_deck_nn/final
+```
+
+`--embed-dim`, `--encoder-hidden`, `--encoder-out`, `--mlp-hidden`, and `--dropout` change the size of the network so a later attention model can be given a similar parameter count. Each run writes `model.pt`, `config.json`, `metrics.json`, and `learning_curve.json` under `artifacts/independent_deck_nn/<feature-mode>/`. Reported metrics are accuracy, ROC-AUC, log loss, and Brier score. CUDA is used when it is available; otherwise training runs on CPU.
+
+Score a saved checkpoint without training. The default command evaluates the validation split of the deck-only model and saves a numbered CSV:
+
+```bash
+python models/predict_independent_deck.py
+python models/predict_independent_deck.py \
+  --model-dir artifacts/independent_deck_nn/with-player-stats \
+  --split validation \
+  --output predictions/independent-deck-player-stats.csv
+```
+
+`--model-dir` must contain `model.pt` and `config.json`. The script applies that file's card vocabulary and, for the player-stats model, its saved imputation and scaling. It does not refit them. Unknown card IDs use the saved unknown token. `--split all --no-evaluate` scores unlabeled matches. Repeat runs append `-1`, `-2`, and so on instead of replacing the previous CSV. The terminal report matches the XGBoost predictor: accuracy, macro F1, ROC-AUC, log loss, Brier score, and a confusion matrix.
+
 ## Model integration rules
 
 Never feed `match_id`, `battle_time`, player tags, `split`, or `label` into a model. Fit imputers, scalers and any learned card vocabulary on the training split only, with an unknown-card policy for validation/test. For a deck-only experiment, exclude trophies and historical features; compare optional player-information variants consistently across all three models. Do not use labels/crowns or current player profiles as pre-match features. Raw crowns are used only to form labels and earlier observed win histories.
@@ -263,7 +299,7 @@ The copied `utils/fetch_cards.py` and cached card/role metadata support the orig
 python -m unittest discover -s tests -v
 ```
 
-Tests cover filtering, deduplication, labels after side assignment, chronological separation, strict prior histories, equal-time isolation, and the collector's per-invocation target/resume behavior with mocked API responses. The full existing raw dataset was also processed successfully. No live collection has been started.
+Tests cover filtering, deduplication, labels after side assignment, chronological separation, strict prior histories, equal-time isolation, the collector's per-invocation target/resume behavior with mocked API responses, and the independent-deck network's shapes, permutation invariance, training-only vocabulary, and a tiny training run. The full existing raw dataset was also processed successfully. No live collection has been started.
 
 See `reports/DATA_FIT_REPORT.md` for the data audit and remaining limitations.
 

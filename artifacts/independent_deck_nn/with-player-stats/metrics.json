@@ -1,0 +1,49 @@
+{
+  "feature_mode": "with-player-stats",
+  "parameter_count": 19201,
+  "architecture": {
+    "vocab_size": 124,
+    "embed_dim": 32,
+    "encoder_hidden": 64,
+    "encoder_out": 64,
+    "mlp_hidden": 64,
+    "dropout": 0.1,
+    "player_stat_dim": 9
+  },
+  "best_epoch_1_based": 19,
+  "epochs_ran": 20,
+  "best_validation_loss": 0.6137390877332574,
+  "split_counts": {
+    "train": 413604,
+    "validation": 51702
+  },
+  "unread_test_rows": 51701,
+  "training": {
+    "accuracy": 0.6731462945232638,
+    "roc_auc": 0.7392795552217503,
+    "log_loss": 0.5992391705513,
+    "brier_score": 0.20665165781974792
+  },
+  "validation": {
+    "accuracy": 0.6605160341959692,
+    "roc_auc": 0.721552731920581,
+    "log_loss": 0.6137390732765198,
+    "brier_score": 0.21276594698429108
+  },
+  "constant_probability_validation": {
+    "accuracy": 0.5002320993385169,
+    "roc_auc": 0.5,
+    "log_loss": 0.6931471403551936,
+    "brier_score": 0.24999997989762426
+  },
+  "history_policy": "Strictly earlier observed matches from matches.jsonl; histories are not recomputed.",
+  "player_stat_semantics": "Starting trophies, trophy difference, prior games, and prior win rate. Null win rates are mean-imputed from training and marked with a missingness flag. Continuous stats are z-scored with training mean and standard deviation.",
+  "input": "C:\\Users\\Joey\\clash_synergy\\data\\processed\\combined\\matches.jsonl",
+  "input_sha256": "9ddd2c4202440a197782e7a4da27c4ac8eae9be50339f3a0cca91fe6ee7d67f5",
+  "versions": {
+    "torch": "2.11.0+cpu",
+    "sklearn": "1.9.1",
+    "numpy": "2.4.4"
+  },
+  "device": "cpu"
+}

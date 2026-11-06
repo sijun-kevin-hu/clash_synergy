@@ -1,0 +1,49 @@
+{
+  "feature_mode": "deck-only",
+  "parameter_count": 18625,
+  "architecture": {
+    "vocab_size": 124,
+    "embed_dim": 32,
+    "encoder_hidden": 64,
+    "encoder_out": 64,
+    "mlp_hidden": 64,
+    "dropout": 0.1,
+    "player_stat_dim": 0
+  },
+  "best_epoch_1_based": 20,
+  "epochs_ran": 20,
+  "best_validation_loss": 0.6270220340425735,
+  "split_counts": {
+    "train": 413604,
+    "validation": 51702
+  },
+  "unread_test_rows": 51701,
+  "training": {
+    "accuracy": 0.6623243488941113,
+    "roc_auc": 0.7243553696813871,
+    "log_loss": 0.611624002456665,
+    "brier_score": 0.2118687629699707
+  },
+  "validation": {
+    "accuracy": 0.6481180611968589,
+    "roc_auc": 0.7061761885812664,
+    "log_loss": 0.6270220279693604,
+    "brier_score": 0.21823185682296753
+  },
+  "constant_probability_validation": {
+    "accuracy": 0.5002320993385169,
+    "roc_auc": 0.5,
+    "log_loss": 0.6931471403551936,
+    "brier_score": 0.24999997989762426
+  },
+  "history_policy": "Strictly earlier observed matches from matches.jsonl; histories are not recomputed.",
+  "player_stat_semantics": "Excluded.",
+  "input": "C:\\Users\\Joey\\clash_synergy\\data\\processed\\combined\\matches.jsonl",
+  "input_sha256": "9ddd2c4202440a197782e7a4da27c4ac8eae9be50339f3a0cca91fe6ee7d67f5",
+  "versions": {
+    "torch": "2.11.0+cpu",
+    "sklearn": "1.9.1",
+    "numpy": "2.4.4"
+  },
+  "device": "cpu"
+}
