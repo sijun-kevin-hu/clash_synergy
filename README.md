@@ -151,10 +151,35 @@ against repeated test evaluations.
 ## XGBoost inference
 
 Inference loads a saved model and returns `P(Player 1 wins)` without training.
-The current implementation has a training CLI; use the Python example below
-for inference. This demonstration predicts the first five already-processed
-matches, which may be training rows; it is a loading/prediction example, not an
-unseen-data evaluation.
+Run from the repository root with your virtual environment active:
+
+```bash
+# Preview five predictions using the deck-only model.
+python3 models/predict_xgboost.py --limit 5
+
+# Use the player-statistics model and save validation predictions.
+python3 models/predict_xgboost.py \
+  --model-dir artifacts/xgboost/with-player-stats \
+  --split validation \
+  --output predictions/player-stats-validation.csv
+
+# Predict new matchups already encoded with the preprocessing CSV schema.
+python3 models/predict_xgboost.py \
+  --input new_matchups.csv \
+  --output predictions/new-matchups.csv
+```
+
+Use `--model-dir` for any saved experiment directory containing `model.json`
+and `features.json`. `--limit N` applies after `--split` filtering; without a
+split selection the input does not need a split column. `--threshold` defaults
+to 0.5. Output contains optional match_id, p1_win_probability and predicted_p1_win.
+Without `--output`, CSV is printed to stdout. Existing output files are rejected.
+Required feature columns are validated and reordered; extra metadata is excluded,
+and NaN values are preserved. These commands do not train or calculate metrics.
+Default rows may include training examples; use validation for development and
+reserve test evaluation for your final selected model.
+
+Equivalent Python example:
 
 ```bash
 python3 - <<'PY'

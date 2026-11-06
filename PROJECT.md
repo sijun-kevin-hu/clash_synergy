@@ -121,3 +121,10 @@ installation failed. Estimator training/save-load and full-data performance have
 NOT been tested. Files are staged outside the repo because this session's write
 permissions do not include the project path. Installation into the repo remains
 necessary; do not claim these files are already active project instructions.
+
+## Saved-model inference CLI
+`models/predict_xgboost.py` loads model.json and features.json without training.
+It accepts processed CSV input, optional split selection, row limit, classification
+threshold, and CSV output (stdout by default). It preserves saved feature order
+and missing values, rejects missing columns/infinities and existing output files,
+and excludes metadata from model inputs. New raw decks still require preprocessing.
