@@ -94,6 +94,14 @@ def digest(path):
     return hasher.hexdigest()
 
 
+def report_parameters(model):
+    """Represent XGBoost's NaN missing-value sentinel as JSON null."""
+    parameters = model.get_params().copy()
+    if np.isnan(parameters['missing']):
+        parameters['missing'] = None
+    return parameters
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--input', type=Path, default=Path('data/processed/combined/baseline.csv'))
@@ -136,7 +144,8 @@ def main():
         'unknown_card_policy': 'Ignore card/support IDs absent from training; never add columns at prediction time.',
         'split_counts': {str(k): int(v) for k, v in frame['split'].value_counts().items()},
         'best_iteration_zero_based': int(model.best_iteration),
-        'parameters': model.get_params(),
+        'parameters': report_parameters(model),
+        'parameter_encoding': 'parameters.missing=null represents the XGBoost NaN missing-value sentinel.',
         'versions': {'xgboost': xgb.__version__, 'sklearn': sklearn.__version__, 'pandas': pd.__version__, 'numpy': np.__version__},
         'validation': metrics(y_val, model.predict_proba(X_val)[:, 1]),
         'training': metrics(y_train, model.predict_proba(X_train)[:, 1]),
