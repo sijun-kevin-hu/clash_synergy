@@ -1,6 +1,6 @@
 # ClashSynergy
 
-Data pipeline for learning within-deck synergies and cross-deck counters for pre-match Trophy Road outcome prediction. Adapted from Kevin Hu's Clash Predict personal project; original scripts are preserved in `legacy/`. Training code is not included yet.
+Data pipeline for learning within-deck synergies and cross-deck counters for pre-match Trophy Road outcome prediction. Adapted from Kevin Hu's Clash Predict personal project; original scripts are preserved in `legacy/`. XGBoost training is provided in `models/train_xgboost.py`; independent-deck and attention neural networks are planned.
 
 ## Setup and collection
 
@@ -64,6 +64,146 @@ Generated under `data/processed/`:
 Splits approximate 80/10/10 by chronological match count. Identical timestamps stay together, so proportions can differ and tiny datasets can have empty splits. Player assignment is deterministic pseudorandom using match ID and seed; it produces approximate, not guaranteed exact, label balance. Ties and invalid/incomplete decks are excluded. Reprocessing a larger raw file recomputes split boundaries; freeze dataset versions for comparable experiments.
 
 Historical features are counts and win rates from **strictly earlier observed matches only**, not lifetime statistics. Equal-time matches cannot use one another's outcomes. Histories update throughout validation/test to simulate rolling pre-match evaluation; this assumption must be reported. No current profile statistics are fetched or substituted for past statistics. Zero-history win rates are null, not fabricated values.
+
+## XGBoost training
+
+Run commands from the repository root with your virtual environment active:
+
+```bash
+source .venv/bin/activate
+python3 -m pip install -r requirements.txt
+```
+
+The training dependencies are `numpy`, `pandas`, `scikit-learn`, and `xgboost`.
+Prepare the combined dataset if it has not already been preprocessed:
+
+```bash
+python3 -m preprocessing.preprocessing \
+  --input data/raw/combined_battles.jsonl \
+  --output-dir data/processed/combined
+```
+
+Train the two baseline variants independently:
+
+```bash
+python3 models/train_xgboost.py --features deck-only
+python3 models/train_xgboost.py --features with-player-stats
+```
+
+Both read `data/processed/combined/baseline.csv` by default. Deck-only uses
+per-card normalized levels (`level / maxLevel`), with zero indicating an absent
+card. With-player-stats also uses starting trophies, trophy difference, prior
+observed games, and prior observed win rate. Raw metadata, identifiers and outcomes
+are excluded from model features. Unknown histories stay missing, not zero.
+
+The existing chronological train/validation/test assignments are preserved.
+Only training rows fit trees. Validation log loss controls early stopping;
+training and validation accuracy, ROC-AUC, log loss and Brier score are reported.
+Historical features use strictly earlier observed matches, including rolling
+history updates during validation/test. No feature scaling is applied.
+
+Default settings: up to 1,000 boosting rounds, tree depth 4, learning rate 0.05,
+row/column subsampling 0.8, four CPU threads, seed 42, and early stopping after
+30 rounds without validation improvement. The terminal prints validation loss
+every 25 rounds, followed by metrics and `COMPLETE` once all outputs are saved.
+
+Outputs are separated by variant:
+
+| Directory contents | Purpose |
+| --- | --- |
+| `model.json` | Trained XGBoost model |
+| `features.json` | Exact feature-column order required for inference |
+| `metrics.json` | Metrics, settings, versions, input hash and dataset summary |
+| `learning_curve.json` | Validation log loss by boosting round |
+
+Default directories are `artifacts/xgboost/deck-only/` and
+`artifacts/xgboost/with-player-stats/`. Reusing an output directory replaces
+its saved files. Use a separate output root for each experiment:
+
+```bash
+python3 models/train_xgboost.py \
+  --features deck-only \
+  --max-depth 3 \
+  --learning-rate 0.05 \
+  --output-dir artifacts/xgboost/depth3
+```
+
+This example writes to `artifacts/xgboost/depth3/deck-only/`.
+Use `--input PATH` for a different preprocessed CSV. Add `--include-optional`
+to include recorded evolution and tower-troop features; these runs add
+`-optional` to the variant directory. Compare models using consistent optional
+inputs. Run `python3 models/train_xgboost.py --help` for all settings.
+
+Test metrics are deliberately omitted by default. After selecting settings on
+validation, rerun the selected configuration with `--evaluate-test` to report
+final test performance; this command trains again before evaluation. For example:
+
+```bash
+python3 models/train_xgboost.py \
+  --features deck-only \
+  --evaluate-test \
+  --output-dir artifacts/xgboost/final
+```
+
+Preserve the same frozen dataset and selected hyperparameters. Do not tune
+against repeated test evaluations.
+
+## XGBoost inference
+
+Inference loads a saved model and returns `P(Player 1 wins)` without training.
+The current implementation has a training CLI; use the Python example below
+for inference. This demonstration predicts the first five already-processed
+matches, which may be training rows; it is a loading/prediction example, not an
+unseen-data evaluation.
+
+```bash
+python3 - <<'PY'
+import json
+from pathlib import Path
+
+import pandas as pd
+from xgboost import XGBClassifier
+
+# Change this path to select the trained variant or experiment.
+model_dir = Path("artifacts/xgboost/deck-only")
+features = json.loads((model_dir / "features.json").read_text())
+
+model = XGBClassifier()
+model.load_model(model_dir / "model.json")
+
+# Replace this input with matches encoded using the same preprocessing schema.
+rows = pd.read_csv("data/processed/combined/baseline.csv", nrows=5)
+missing = set(features) - set(rows.columns)
+if missing:
+    raise ValueError(f"Input is missing required feature columns: {sorted(missing)}")
+
+# Load only saved numerical features, in precisely their training order.
+# Metadata, split and label are never passed to the model.
+X = rows.reindex(columns=features).astype("float32")
+probabilities = model.predict_proba(X)[:, 1]
+
+predictions = pd.DataFrame({
+    "p1_win_probability": probabilities,
+    "predicted_p1_win": (probabilities >= 0.5).astype(int),
+})
+if "match_id" in rows.columns:
+    predictions.insert(0, "match_id", rows["match_id"].to_numpy())
+print(predictions.to_string(index=False))
+PY
+```
+
+A probability of `0.72` means an estimated 72% chance that the player encoded
+as Player 1 wins. A threshold of 0.5 converts probabilities into winner labels.
+
+For new matchups, provide **pre-match features in the same encoding**: card
+levels divided by maxLevel; absent known cards set to zero; and, when required,
+pre-match trophies and strictly prior observed histories. Keep unknown history
+and unrecorded evolution as NaN. A completely absent feature column is a schema
+error in this example, so explicitly construct all required columns. Card IDs
+never observed in training are ignored by the saved feature list; the model
+cannot learn effects for those cards. Optional evolution/tower inputs must match
+the trained variant. Raw decks or card names alone cannot be passed directly to
+`predict_proba`; they first need the matching feature transformation.
 
 ## Model integration rules
 
