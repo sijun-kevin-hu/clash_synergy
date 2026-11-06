@@ -82,3 +82,11 @@ python -m unittest discover -s tests -v
 Tests cover filtering, deduplication, labels after side assignment, chronological separation, strict prior histories, equal-time isolation, and the collector's per-invocation target/resume behavior with mocked API responses. The full existing raw dataset was also processed successfully. No live collection has been started.
 
 See `reports/DATA_FIT_REPORT.md` for the data audit and remaining limitations.
+
+## Frozen static reference data
+
+RoyaleAPI card metadata, rarity/mode catalogs and combat stats are stored in
+`data/static/royaleapi/`. See its README and manifest for the pinned version,
+source URLs and checksums. The latest upstream commit available at download was
+October 18, 2023; these files are **not verified current** for November 2026
+battles. They are reference data and are not automatically added to model inputs.

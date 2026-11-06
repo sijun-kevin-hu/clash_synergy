@@ -1,0 +1,50 @@
+{
+  "source": "https://github.com/RoyaleAPI/cr-api-data",
+  "commit": "d5461b0a59bff33c4da2fc845b07275b66b2d6ff",
+  "commit_date": "2023-10-18T00:23:16Z",
+  "snapshot_date": "2026-11-05",
+  "downloaded_at_utc": "2026-11-06T02:49:16.396184+00:00",
+  "files": {
+    "cards.json": {
+      "sha256": "c23faae5a5d2397f9adf36cc2dae87e5074d13cd8afe57a1de89006629a988b5",
+      "url": "https://raw.githubusercontent.com/RoyaleAPI/cr-api-data/d5461b0a59bff33c4da2fc845b07275b66b2d6ff/docs/json/cards.json"
+    },
+    "rarities.json": {
+      "sha256": "ed71f6bef50f009d517830f80330efc5bcf45aa37382ef3d19d17147b7433c9b",
+      "url": "https://raw.githubusercontent.com/RoyaleAPI/cr-api-data/d5461b0a59bff33c4da2fc845b07275b66b2d6ff/docs/json/rarities.json"
+    },
+    "game_modes.json": {
+      "sha256": "1dd946db056a39c1c61aff817fc4cc6915cef4b9bbc9017bf4a00f59e25dad17",
+      "url": "https://raw.githubusercontent.com/RoyaleAPI/cr-api-data/d5461b0a59bff33c4da2fc845b07275b66b2d6ff/docs/json/game_modes.json"
+    },
+    "cards_stats.json": {
+      "sha256": "664c35ac1f8717f8ed4331fa1a3af1216bb6d45832487ab0917c30799016fbc7",
+      "url": "https://raw.githubusercontent.com/RoyaleAPI/cr-api-data/d5461b0a59bff33c4da2fc845b07275b66b2d6ff/docs/json/cards_stats.json"
+    },
+    "cards_stats_troop.json": {
+      "sha256": "0f2fd5eeac355b4a3072e0ef0b87a56883c4b32be868012cddf1992f048f2bae",
+      "url": "https://raw.githubusercontent.com/RoyaleAPI/cr-api-data/d5461b0a59bff33c4da2fc845b07275b66b2d6ff/docs/json/cards_stats_troop.json"
+    },
+    "cards_stats_building.json": {
+      "sha256": "84b1287e64253aa3e3d813d4c71c13b24d5057292d0f23fcd474fdba9c7d91a9",
+      "url": "https://raw.githubusercontent.com/RoyaleAPI/cr-api-data/d5461b0a59bff33c4da2fc845b07275b66b2d6ff/docs/json/cards_stats_building.json"
+    },
+    "cards_stats_spell.json": {
+      "sha256": "4c2a3e8cb2c27f507bc07a12052749dedcca273a32c9e8e1a8837ba0c59bbed7",
+      "url": "https://raw.githubusercontent.com/RoyaleAPI/cr-api-data/d5461b0a59bff33c4da2fc845b07275b66b2d6ff/docs/json/cards_stats_spell.json"
+    },
+    "cards_stats_projectile.json": {
+      "sha256": "6c145a5145fe5641f1192a932605a9d892645b0ab9e80daa5828a12b3379bc1e",
+      "url": "https://raw.githubusercontent.com/RoyaleAPI/cr-api-data/d5461b0a59bff33c4da2fc845b07275b66b2d6ff/docs/json/cards_stats_projectile.json"
+    },
+    "cards_stats_characters.json": {
+      "sha256": "bef4711885db88403bac160e2fde052133161e8413873f6d21cce594fcd9241f",
+      "url": "https://raw.githubusercontent.com/RoyaleAPI/cr-api-data/d5461b0a59bff33c4da2fc845b07275b66b2d6ff/docs/json/cards_stats_characters.json"
+    },
+    "cards_stats_character_buff.json": {
+      "sha256": "44886305e66bbdfbce04bb8c55ce2348040cbc3b89ae81f7357c1ad6171b76a2",
+      "url": "https://raw.githubusercontent.com/RoyaleAPI/cr-api-data/d5461b0a59bff33c4da2fc845b07275b66b2d6ff/docs/json/cards_stats_character_buff.json"
+    }
+  },
+  "freshness_note": "Latest upstream master when downloaded; source commit is 2023-10-18. Not verified current for battles collected 2026-11-05."
+}
