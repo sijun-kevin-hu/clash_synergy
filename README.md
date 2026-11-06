@@ -175,7 +175,13 @@ split selection the input does not need a split column. `--threshold` defaults
 to 0.5. Output contains optional match_id, p1_win_probability and predicted_p1_win.
 Without `--output`, CSV is printed to stdout. Existing output files are rejected.
 Required feature columns are validated and reordered; extra metadata is excluded,
-and NaN values are preserved. These commands do not train or calculate metrics.
+and NaN values are preserved. These commands do not train. Add `--evaluate` to print accuracy, ROC-AUC,
+log loss, Brier score and a confusion matrix to stderr using the selected rows
+and their labels. ROC-AUC is null when only one class is selected. For example:
+
+```bash
+python3 models/predict_xgboost.py --split validation --limit 1000 --evaluate --output predictions/validation-1000.csv
+```
 Default rows may include training examples; use validation for development and
 reserve test evaluation for your final selected model.
 

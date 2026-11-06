@@ -128,3 +128,8 @@ It accepts processed CSV input, optional split selection, row limit, classificat
 threshold, and CSV output (stdout by default). It preserves saved feature order
 and missing values, rejects missing columns/infinities and existing output files,
 and excludes metadata from model inputs. New raw decks still require preprocessing.
+
+Inference evaluation: `--evaluate` reports selected-batch accuracy, ROC-AUC,
+log loss, Brier score and confusion matrix using labels only as targets.
+Single-class ROC-AUC is null. All 11 unit tests passed, including metric values,
+row alignment after selection, CLI evaluation and single-class handling.

@@ -7,6 +7,23 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from xgboost import XGBClassifier
+from sklearn.metrics import accuracy_score, roc_auc_score, log_loss, brier_score_loss, confusion_matrix
+
+
+def evaluate(rows, predictions):
+    if 'label' not in rows or not rows['label'].isin([0, 1]).all():
+        raise ValueError('--evaluate requires a label column containing only 0 or 1.')
+    y = rows['label'].to_numpy()
+    p = predictions['p1_win_probability'].to_numpy()
+    predicted = predictions['predicted_p1_win'].to_numpy()
+    return {
+        'matches': len(y),
+        'accuracy': float(accuracy_score(y, predicted)),
+        'roc_auc': float(roc_auc_score(y, p)) if len(np.unique(y)) == 2 else None,
+        'log_loss': float(log_loss(y, p, labels=[0, 1])),
+        'brier_score': float(brier_score_loss(y, p)),
+        'confusion_matrix': confusion_matrix(y, predicted, labels=[0, 1]).tolist(),
+    }
 
 
 def predict(model_dir, rows, threshold=0.5):
@@ -39,6 +56,7 @@ def main():
     parser.add_argument('--split', choices=['train', 'validation', 'test'], help='Select rows by their existing split.')
     parser.add_argument('--limit', type=int, help='Predict only the first N rows after split selection.')
     parser.add_argument('--threshold', type=float, default=0.5)
+    parser.add_argument('--evaluate', action='store_true', help='Print labeled batch metrics to stderr; ROC-AUC is null for a single-class batch.')
     args = parser.parse_args()
     if not 0 <= args.threshold <= 1:
         parser.error('--threshold must be between 0 and 1.')
@@ -57,6 +75,7 @@ def main():
         if rows.empty:
             raise ValueError('No input rows selected.')
         result = predict(args.model_dir, rows, args.threshold)
+        report = evaluate(rows, result) if args.evaluate else None
         if args.output:
             args.output.parent.mkdir(parents=True, exist_ok=True)
             with args.output.open('x') as stream:
@@ -64,6 +83,9 @@ def main():
             print(f'Saved {len(result):,} predictions to {args.output}', file=sys.stderr)
         else:
             result.to_csv(sys.stdout, index=False)
+        if report is not None:
+            print('Batch metrics (confusion matrix: rows=actual, columns=predicted; order=[0, 1]):', file=sys.stderr)
+            print(json.dumps(report, indent=2, allow_nan=False), file=sys.stderr)
     except (OSError, ValueError) as error:
         parser.exit(2, f'Error: {error}\n')
 
